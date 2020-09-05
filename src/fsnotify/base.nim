@@ -4,8 +4,11 @@ import timerwheel
 when defined(windows):
   import os, times
   import xio/windows/base/[fileapi, handleapi]
-elif defined(posix):
+elif defined(linux):
+  import posix
+elif defined(macosx):
   import posix except Time
+  import times
 
 
 type
