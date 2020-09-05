@@ -5,7 +5,7 @@ when defined(windows):
   import os, times
   import xio/windows/base/[fileapi, handleapi]
 elif defined(posix):
-  import posix
+  import posix except Time
 
 
 type
