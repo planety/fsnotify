@@ -10,4 +10,4 @@ srcDir        = "src"
 # Dependencies
 
 requires "nim >= 1.2.6"
-requires "https://github.com/xflywind/Xio"
+requires "xio >= 0.1.0"
