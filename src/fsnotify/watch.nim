@@ -41,7 +41,6 @@ proc register*(watcher: var Watcher, path: string, cb: EventCallback,
 
   watcher.path.add pathData
 
-  echo pathData.kind
 
   case pathData.kind
   of PathKind.File:

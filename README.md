@@ -7,8 +7,8 @@ A file system monitor in Nim
 |---|---|---|
 |Windows|`ReadDirectoryChangesW` |polling using `os.getLastModificationTime` and `os.fileExists`|
 |Linux|`inotify`|polling using `inotify` and `os.fileExists`|
-|Macos|TODO(`kqueue`)|polling using `os.getLastModificationTime` and `os.fileExists`|
-|BSD|TODO(`kqueue`)|TODO(`kqueue`)|
+|Macos|TODO(`fsevents`)|polling using `os.getLastModificationTime` and `os.fileExists`|
+|BSD|Not implemented|TODO(`kqueue`)|
 
 ## Hello, world
 

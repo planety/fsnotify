@@ -11,3 +11,6 @@ srcDir        = "src"
 
 requires "nim >= 1.2.6"
 requires "xio >= 0.1.0"
+
+task tests, "Run all tests":
+  exec "testament all"
