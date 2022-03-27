@@ -1,4 +1,4 @@
-import timerwheel
+import timers
 import os, base
 export base
 
@@ -13,20 +13,17 @@ elif defined(macosx):
   import macpath
   export macpath
 
-
 type
   Watcher* = object
     timer: Timer
     path: seq[PathEventData]
 
-proc taskCounter*(watcher: Watcher): int =
-  watcher.timer.wheel.taskCounter
 
-proc initWatcher*(interval = 100): Watcher =
-  result.timer = initTimer(interval)
+proc initWatcher*(): Watcher =
+  discard
 
 proc register*(watcher: var Watcher, path: string, cb: EventCallback, 
-               ms = 10, repeatTimes = -1, treatAsFile = false) =
+               treatAsFile = false) =
   let idx = watcher.path.len
 
   let pathData =
@@ -45,25 +42,22 @@ proc register*(watcher: var Watcher, path: string, cb: EventCallback,
   case pathData.kind
   of PathKind.File:
     var event = initTimerEvent(filecb, cast[pointer](addr watcher.path[idx]))
-    watcher.path[idx].node = watcher.timer.add(event, ms, repeatTimes)
+    watcher.timer.add(event)
   of PathKind.Dir:
     var event = initTimerEvent(dircb, cast[pointer](addr watcher.path[idx]))
-    watcher.path[idx].node = watcher.timer.add(event, ms, repeatTimes)
+    watcher.timer.add(event)
 
-proc register*(watcher: var Watcher, pathList: seq[string], cb: EventCallback, 
-               ms = 10, repeatTimes = -1, treatAsFile = false) =
+proc register*(watcher: var Watcher, pathList: seq[string], cb: EventCallback,
+               treatAsFile = false) =
   for path in pathList:
-    watcher.register(path, cb, ms, repeatTimes, treatAsFile)
+    watcher.register(path, cb, treatAsFile)
 
-
-# proc remove*(watcher: var Watcher, data: PathEventData) =
-#   watcher.timer.cancel(data.node)
-#   data.close()
+template process*(watcher: var Watcher) =
+  process(watcher.timer)
 
 proc poll*(watcher: var Watcher, ms = 100) =
   sleep(ms)
-  discard process(watcher.timer)
-
+  process(watcher)
 
 when isMainModule:
   block:
@@ -71,11 +65,11 @@ when isMainModule:
       echo "Hello: "
       echo event
 
-    var watcher = initWatcher(1)
-    register(watcher, "/root/play", hello, ms = 100)
+    var watcher = initWatcher()
+    register(watcher, "/root/play", hello)
 
     while true:
-      poll(watcher, 2000)
+      poll(watcher, 300)
 
 # when isMainModule:
 #   block:

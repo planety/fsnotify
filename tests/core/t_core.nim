@@ -1,9 +1,6 @@
 import ../../src/fsnotify
 
 
-
-
-
 block:
   var count = 0
 
@@ -15,10 +12,10 @@ block:
     doAssert FileEventAction.Modify in s
     inc count
 
-  var watcher = initWatcher(1)
+  var watcher = initWatcher()
   let filename = "tests/static/go_test1.txt"
   
-  register(watcher, filename, modify, ms = 10)
+  register(watcher, filename, modify)
 
   writeFile(filename, "1234")
   poll(watcher, 20)

@@ -13,6 +13,7 @@ A file system monitor in Nim
 ## Hello, world
 
 ```nim
+import std/os
 import fsnotify
 
 
@@ -20,9 +21,10 @@ proc hello(event: seq[PathEvent]) =
   echo "Hello: "
   echo event
 
-var watcher = initWatcher(1)
-register(watcher, "/root/play", hello, ms = 100)
+var watcher = initWatcher()
+register(watcher, "/root/play", hello)
 
 while true:
-  poll(watcher, 2000)
+  sleep(500)
+  process(watcher)
 ```
