@@ -1,2 +1,0 @@
-megatest:processing: tests\core\t_core.nim
-Dir

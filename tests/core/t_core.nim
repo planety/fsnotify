@@ -13,7 +13,7 @@ block:
     inc count
 
   var watcher = initWatcher()
-  let filename = "tests/static/go_test1.txt"
+  let filename = "tests/core/static/go_test1.txt"
   
   register(watcher, filename, modify)
 
