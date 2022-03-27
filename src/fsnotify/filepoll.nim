@@ -60,19 +60,3 @@ proc filecb*(args: pointer = nil) =
       if fileExists(data.name):
         init(data)
         call(data, @[initPathEvent(data.name, FileEventAction.Create)])
-
-
-when isMainModule:
-  import timerwheel
-
-  proc hello(event: seq[PathEvent]) =
-    echo event
-
-  var t = initTimer(100)
-  var data = initFileEventData("watch.nim", hello)
-  var event0 = initTimerEvent(filecb, cast[pointer](addr data))
-  discard t.add(event0, 10, -1)
-
-  while true:
-    sleep(2000)
-    discard process(t)

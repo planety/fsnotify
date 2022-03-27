@@ -1,6 +1,3 @@
-
-import timerwheel
-
 when defined(windows):
   import os, times
   import xio/windows/base/[fileapi, handleapi]
@@ -34,7 +31,6 @@ when defined(windows):
       name*: string
       exists*: bool
       cb: EventCallback
-      node: TimerEventNode
 
       case kind*: PathKind
       of PathKind.File:
@@ -74,7 +70,6 @@ elif defined(linux):
 
     PathEventData* = object
       handle*: FileHandle
-      node*: TimerEventNode
       buffer*: string
       cb*: EventCallback
 
@@ -100,7 +95,6 @@ elif defined(macosx):
       name*: string
       exists*: bool
       cb: EventCallback
-      node: TimerEventNode
 
       case kind*: PathKind
       of PathKind.File:
@@ -124,12 +118,6 @@ elif defined(macosx):
 
   proc call*(data: ptr PathEventData, event: seq[PathEvent]) =
     data.cb(event)
-
-proc `node`*(data: PathEventData): TimerEventNode =
-  data.node
-
-proc `node=`*(data: var PathEventData, node: TimerEventNode) =
-  data.node = node
 
 proc initPathEvent*(name: string, action: FileEventAction, newName = ""): PathEvent =
   (name, action, newName)

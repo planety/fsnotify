@@ -111,23 +111,3 @@ proc dircb*(args: pointer = nil) =
       if dirExists(data.name):
         init(data)
         call(data, @[initPathEvent("", FileEventAction.CreateSelf)])
-
-
-when isMainModule:
-  import timerwheel
-
-  proc hello(event: seq[PathEvent]) =
-    echo event
-
-  var t = initTimer(1)
-  var data = initDirEventData("d://qqpcmgr/desktop/test", hello)
-  var event0 = initTimerEvent(dircb, cast[pointer](addr data))
-
-
-  discard t.add(event0, 1000, -1)
-
-  while true:
-    sleep(2000)
-    discard process(t)
-
-  close(data)
