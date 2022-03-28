@@ -41,10 +41,10 @@ proc register*(watcher: var Watcher, path: string, cb: EventCallback,
 
   case pathData.kind
   of PathKind.File:
-    var event = initTimerEvent(filecb, cast[pointer](addr watcher.path[idx]))
+    var event = initTimerEvent(filecb, watcher.path[idx])
     watcher.timer.add(event)
   of PathKind.Dir:
-    var event = initTimerEvent(dircb, cast[pointer](addr watcher.path[idx]))
+    var event = initTimerEvent(dircb, watcher.path[idx])
     watcher.timer.add(event)
 
 proc register*(watcher: var Watcher, pathList: seq[string], cb: EventCallback,

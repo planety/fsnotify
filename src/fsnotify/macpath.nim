@@ -6,5 +6,5 @@ export filepoll
 proc initDirEventData*(name: string, cb: EventCallback): PathEventData =
   discard
 
-proc dircb*(args: pointer = nil) =
+proc dircb*(data: var PathEventData) =
   discard

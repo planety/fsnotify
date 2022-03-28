@@ -59,7 +59,7 @@ when defined(windows):
   proc `cb=`*(data: var PathEventData, cb: EventCallback) =
     data.cb = cb
 
-  proc call*(data: ptr PathEventData, event: seq[PathEvent]) =
+  proc call*(data: var PathEventData, event: seq[PathEvent]) =
     data.cb(event)
 
 elif defined(linux):
@@ -85,7 +85,7 @@ elif defined(linux):
         cookie*: uint32
 
 
-  proc call*(data: ptr PathEventData, event: seq[PathEvent]) =
+  proc call*(data: var PathEventData, event: seq[PathEvent]) =
     if data.cb != nil:
       data.cb(event)
 
@@ -116,7 +116,7 @@ elif defined(macosx):
   proc `cb=`*(data: var PathEventData, cb: EventCallback) =
     data.cb = cb
 
-  proc call*(data: ptr PathEventData, event: seq[PathEvent]) =
+  proc call*(data: var PathEventData, event: seq[PathEvent]) =
     data.cb(event)
 
 proc initPathEvent*(name: string, action: FileEventAction, newName = ""): PathEvent =

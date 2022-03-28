@@ -33,30 +33,28 @@ proc initFileEventData*(name: string, cb: EventCallback): PathEventData =
 proc close*(data: PathEventData) =
   discard
 
-proc filecb*(args: pointer = nil) =
-  if args != nil:
-    var data = cast[ptr PathEventData](args)
-    if data.exists:
-      if fileExists(data.name):
-        let now = getLastModificationTime(data.name)
-        if now != data.lastModificationTime:
-          data.lastModificationTime = now
-          call(data, @[initPathEvent(data.name, FileEventAction.Modify)])
-      else:
-        data.exists = false
-        var event = initPathEvent(data.name, FileEventAction.Remove)
-
-        let dir = parentDir(data.name)
-        for kind, name in walkDir(dir):
-          if kind == pcFile and getUniqueFileId(name) == data.uniqueId:
-            data.exists = true
-            data.lastModificationTime = getLastModificationTime(name)
-            event = initPathEvent(data.name, FileEventAction.Rename, name)
-            data.name = name
-            break
-
-        call(data, @[event])
+proc filecb*(data: var PathEventData) =
+  if data.exists:
+    if fileExists(data.name):
+      let now = getLastModificationTime(data.name)
+      if now != data.lastModificationTime:
+        data.lastModificationTime = now
+        call(data, @[initPathEvent(data.name, FileEventAction.Modify)])
     else:
-      if fileExists(data.name):
-        init(data)
-        call(data, @[initPathEvent(data.name, FileEventAction.Create)])
+      data.exists = false
+      var event = initPathEvent(data.name, FileEventAction.Remove)
+
+      let dir = parentDir(data.name)
+      for kind, name in walkDir(dir):
+        if kind == pcFile and getUniqueFileId(name) == data.uniqueId:
+          data.exists = true
+          data.lastModificationTime = getLastModificationTime(name)
+          event = initPathEvent(data.name, FileEventAction.Rename, name)
+          data.name = name
+          break
+
+      call(data, @[event])
+  else:
+    if fileExists(data.name):
+      init(data)
+      call(data, @[initPathEvent(data.name, FileEventAction.Create)])
