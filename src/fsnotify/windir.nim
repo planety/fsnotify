@@ -83,8 +83,9 @@ proc dircb*(data: var PathEventData) =
 
             inc(next, info.NextEntryOffset.int)
 
-          startQueue(data)
           call(data, event)
+        startQueue(data)
+        
     else:
       data.exists = false
       data.handle = nil
