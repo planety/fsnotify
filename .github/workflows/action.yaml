@@ -10,10 +10,10 @@ jobs:
         os:
           - ubuntu-latest
           - windows-latest
-          - macOS-latest
+          - macOS-13
         nim-version:
           - binary:stable
-          - nightly:https://github.com/nim-lang/nightlies/releases/tag/2024-06-25-devel-2c83f94544b9acc6d06fd6b7fcf035e5cb0aa8eb
+          - devel
     steps:
       - name: Checkout
         uses: actions/checkout@v4
