@@ -13,7 +13,7 @@ jobs:
           - macOS-13
         nim-version:
           - binary:stable
-          - devel
+          - nightly:https://github.com/nim-lang/nightlies/releases/tag/latest-devel
     steps:
       - name: Checkout
         uses: actions/checkout@v4
