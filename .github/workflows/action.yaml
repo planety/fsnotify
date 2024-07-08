@@ -1,6 +1,6 @@
 name: Test fsnotify
 
-on: [push, pull_request]
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   test:
@@ -10,36 +10,23 @@ jobs:
         os:
           - ubuntu-latest
           - windows-latest
-          - macOS-latest
+          - macOS-13
         nim-version:
-          - stable
-          - devel
+          - binary:stable
+          - nightly:https://github.com/nim-lang/nightlies/releases/tag/latest-devel
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Cache choosenim
-      id: cache-choosenim
-      uses: actions/cache@v4
-      with:
-        path: ~/.choosenim
-        key: ${{ runner.os }}-choosenim-${{ matrix.nim-version}}
+      - name: Setup nim
+        uses: iffy/install-nim@v5
+        with:
+          version: ${{ matrix.nim-version }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Cache nimble
-      id: cache-nimble
-      uses: actions/cache@v4
-      with:
-        path: ~/.nimble
-        key: ${{ runner.os }}-nimble-${{ matrix.nim-version}}-${{ hashFiles('prologue.nimble') }}
-        restore-keys: |
-          ${{ runner.os }}-nimble-${{ matrix.nim-version}}-
-    - name: Setup nim
-      uses: jiro4989/setup-nim-action@v1
-      with:
-        nim-version: ${{ matrix.nim-version }}
+      - name: Install Packages
+        run: nimble install -y
 
-    - name: Install Packages
-      run: nimble install -y
-
-    - name: Test
-      run: nimble tests
+      - name: Test
+        run: nimble tests
