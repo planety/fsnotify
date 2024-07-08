@@ -51,7 +51,6 @@ when defined(windows):
 
   proc getFileId(name: string): uint =
     var x = newWideCString(name)
-    result = uint getFileAttributesW(addr x)
     result = uint getFileAttributesW(cast[LPCWSTR](addr x))
 
   proc `name=`*(data: var PathEventData, name: string) =
