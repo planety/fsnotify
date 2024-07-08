@@ -34,7 +34,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-nimble-${{ matrix.nim-version}}-
     - name: Setup nim
-      uses: jiro4989/setup-nim-action@v2
+      uses: jiro4989/setup-nim-action@v1
       with:
         nim-version: ${{ matrix.nim-version }}
 
