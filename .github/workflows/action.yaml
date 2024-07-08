@@ -22,6 +22,8 @@ jobs:
         uses: iffy/install-nim@v5
         with:
           version: ${{ matrix.nim-version }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install Packages
         run: nimble install -y
