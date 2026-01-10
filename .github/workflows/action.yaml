@@ -10,13 +10,13 @@ jobs:
         os:
           - ubuntu-latest
           - windows-latest
-          - macOS-15
+          - macOS-13
         nim-version:
           - binary:stable
           - nightly:https://github.com/nim-lang/nightlies/releases/tag/latest-devel
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup nim
         uses: iffy/install-nim@v5
