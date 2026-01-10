@@ -10,7 +10,7 @@ jobs:
         os:
           - ubuntu-latest
           - windows-latest
-          - macOS-13
+          - macOS-15
         nim-version:
           - binary:stable
           - nightly:https://github.com/nim-lang/nightlies/releases/tag/latest-devel
