@@ -19,7 +19,11 @@ proc initFileEventData*(name: string, cb: EventCallback): PathEventData =
   result.cb = cb
 
   if fileExists(name):
-    init(result)
+    try:
+      init(result)
+    except OSError:
+      # File was removed between fileExists check and init call
+      discard
 
 # proc initFileEventData*(args: seq[tuple[name: string, cb: EventCallback]]): seq[FileEventData] =
 #   result = newSeq[FileEventData](args.len)
@@ -36,10 +40,14 @@ proc close*(data: PathEventData) =
 proc filecb*(data: var PathEventData) =
   if data.exists:
     if fileExists(data.name):
-      let now = getLastModificationTime(data.name)
-      if now != data.lastModificationTime:
-        data.lastModificationTime = now
-        call(data, @[initPathEvent(data.name, FileEventAction.Modify)])
+      try:
+        let now = getLastModificationTime(data.name)
+        if now != data.lastModificationTime:
+          data.lastModificationTime = now
+          call(data, @[initPathEvent(data.name, FileEventAction.Modify)])
+      except OSError:
+        # File was removed between fileExists check and getLastModificationTime call
+        discard
     else:
       data.exists = false
       var event = initPathEvent(data.name, FileEventAction.Remove)
@@ -48,7 +56,12 @@ proc filecb*(data: var PathEventData) =
       for kind, name in walkDir(dir):
         if kind == pcFile and getUniqueFileId(name) == data.uniqueId:
           data.exists = true
-          data.lastModificationTime = getLastModificationTime(name)
+          try:
+            data.lastModificationTime = getLastModificationTime(name)
+          except OSError:
+            # File was removed between walkDir and getLastModificationTime call
+            data.exists = false
+            continue
           event = initPathEvent(data.name, FileEventAction.Rename, name)
           data.name = name
           break
@@ -56,5 +69,9 @@ proc filecb*(data: var PathEventData) =
       call(data, @[event])
   else:
     if fileExists(data.name):
-      init(data)
-      call(data, @[initPathEvent(data.name, FileEventAction.Create)])
+      try:
+        init(data)
+        call(data, @[initPathEvent(data.name, FileEventAction.Create)])
+      except OSError:
+        # File was removed between fileExists check and init call
+        discard
